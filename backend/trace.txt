@@ -1,0 +1,24 @@
+User: <Coordenador 1>
+Password check: True
+Secret type: <class 'NoneType'>
+ERROR DETECTED:
+Traceback (most recent call last):
+  File "C:\Users\danie\atas_sistema\backend\test_trace.py", line 21, in <module>
+    token = jwt.encode({'coordenador_id': user.id}, secret, algorithm="HS256")
+  File "C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\jwt\api_jwt.py", line 147, in encode
+    return self._jws.encode(
+           ~~~~~~~~~~~~~~~~^
+        json_payload,
+        ^^^^^^^^^^^^^
+    ...<4 lines>...
+        sort_headers=sort_headers,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\jwt\api_jws.py", line 190, in encode
+    key = alg_obj.prepare_key(key)
+  File "C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\jwt\algorithms.py", line 326, in prepare_key
+    key_bytes = force_bytes(key)
+  File "C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\jwt\utils.py", line 22, in force_bytes
+    raise TypeError("Expected a string value")
+TypeError: Expected a string value

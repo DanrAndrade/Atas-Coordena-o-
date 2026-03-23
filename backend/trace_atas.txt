@@ -1,0 +1,404 @@
+ERROR: 500
+<!doctype html>
+<html lang=en>
+  <head>
+    <title>TypeError: &#39;status&#39; is an invalid keyword argument for Ata
+ // Werkzeug Debugger</title>
+    <link rel="stylesheet" href="?__debugger__=yes&amp;cmd=resource&amp;f=style.css">
+    <link rel="shortcut icon"
+        href="?__debugger__=yes&amp;cmd=resource&amp;f=console.png">
+    <script src="?__debugger__=yes&amp;cmd=resource&amp;f=debugger.js"></script>
+    <script>
+      var CONSOLE_MODE = false,
+          EVALEX = true,
+          EVALEX_TRUSTED = false,
+          SECRET = "qPd8QYymJ3NgSrwpizSK";
+    </script>
+  </head>
+  <body style="background-color: #fff">
+    <div class="debugger">
+<h1>TypeError</h1>
+<div class="detail">
+  <p class="errormsg">TypeError: &#39;status&#39; is an invalid keyword argument for Ata
+</p>
+</div>
+<h2 class="traceback">Traceback <em>(most recent call last)</em></h2>
+<div class="traceback">
+  <h3></h3>
+  <ul><li><div class="frame" id="frame-1846329316256">
+  <h4>File <cite class="filename">"C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\flask\app.py"</cite>,
+      line <em class="line">1536</em>,
+      in <code class="function">__call__</code></h4>
+  <div class="source library"><pre class="line before"><span class="ws">    </span>) -&gt; cabc.Iterable[bytes]:</pre>
+<pre class="line before"><span class="ws">        </span>&#34;&#34;&#34;The WSGI server calls the Flask application object as the</pre>
+<pre class="line before"><span class="ws">        </span>WSGI application. This calls :meth:`wsgi_app`, which can be</pre>
+<pre class="line before"><span class="ws">        </span>wrapped to apply middleware.</pre>
+<pre class="line before"><span class="ws">        </span>&#34;&#34;&#34;</pre>
+<pre class="line current"><span class="ws">        </span>return self.wsgi_app(environ, start_response)
+<span class="ws">        </span>       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre></div>
+</div>
+
+<li><div class="frame" id="frame-1846329317856">
+  <h4>File <cite class="filename">"C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\flask\app.py"</cite>,
+      line <em class="line">1514</em>,
+      in <code class="function">wsgi_app</code></h4>
+  <div class="source library"><pre class="line before"><span class="ws">            </span>try:</pre>
+<pre class="line before"><span class="ws">                </span>ctx.push()</pre>
+<pre class="line before"><span class="ws">                </span>response = self.full_dispatch_request()</pre>
+<pre class="line before"><span class="ws">            </span>except Exception as e:</pre>
+<pre class="line before"><span class="ws">                </span>error = e</pre>
+<pre class="line current"><span class="ws">                </span>response = self.handle_exception(e)
+<span class="ws">                </span>           ^^^^^^^^^^^^^^^^^^^^^^^^</pre>
+<pre class="line after"><span class="ws">            </span>except:</pre>
+<pre class="line after"><span class="ws">                </span>error = sys.exc_info()[1]</pre>
+<pre class="line after"><span class="ws">                </span>raise</pre>
+<pre class="line after"><span class="ws">            </span>return response(environ, start_response)</pre>
+<pre class="line after"><span class="ws">        </span>finally:</pre></div>
+</div>
+
+<li><div class="frame" id="frame-1846329318496">
+  <h4>File <cite class="filename">"C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\flask_cors\extension.py"</cite>,
+      line <em class="line">176</em>,
+      in <code class="function">wrapped_function</code></h4>
+  <div class="source library"><pre class="line before"><span class="ws">        </span># These error handlers will still respect the behavior of the route</pre>
+<pre class="line before"><span class="ws">        </span>if options.get(&#34;intercept_exceptions&#34;, True):</pre>
+<pre class="line before"><span class="ws"></span> </pre>
+<pre class="line before"><span class="ws">            </span>def _after_request_decorator(f):</pre>
+<pre class="line before"><span class="ws">                </span>def wrapped_function(*args, **kwargs):</pre>
+<pre class="line current"><span class="ws">                    </span>return cors_after_request(app.make_response(f(*args, **kwargs)))
+<span class="ws">                    </span>                                            ^^^^^^^^^^^^^^^^^^</pre>
+<pre class="line after"><span class="ws"></span> </pre>
+<pre class="line after"><span class="ws">                </span>return wrapped_function</pre>
+<pre class="line after"><span class="ws"></span> </pre>
+<pre class="line after"><span class="ws">            </span>if hasattr(app, &#34;handle_exception&#34;):</pre>
+<pre class="line after"><span class="ws">                </span>app.handle_exception = _after_request_decorator(app.handle_exception)</pre></div>
+</div>
+
+<li><div class="frame" id="frame-1846329318336">
+  <h4>File <cite class="filename">"C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\flask\app.py"</cite>,
+      line <em class="line">1511</em>,
+      in <code class="function">wsgi_app</code></h4>
+  <div class="source library"><pre class="line before"><span class="ws">        </span>ctx = self.request_context(environ)</pre>
+<pre class="line before"><span class="ws">        </span>error: BaseException | None = None</pre>
+<pre class="line before"><span class="ws">        </span>try:</pre>
+<pre class="line before"><span class="ws">            </span>try:</pre>
+<pre class="line before"><span class="ws">                </span>ctx.push()</pre>
+<pre class="line current"><span class="ws">                </span>response = self.full_dispatch_request()
+<span class="ws">                </span>           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre>
+<pre class="line after"><span class="ws">            </span>except Exception as e:</pre>
+<pre class="line after"><span class="ws">                </span>error = e</pre>
+<pre class="line after"><span class="ws">                </span>response = self.handle_exception(e)</pre>
+<pre class="line after"><span class="ws">            </span>except:</pre>
+<pre class="line after"><span class="ws">                </span>error = sys.exc_info()[1]</pre></div>
+</div>
+
+<li><div class="frame" id="frame-1846329317696">
+  <h4>File <cite class="filename">"C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\flask\app.py"</cite>,
+      line <em class="line">919</em>,
+      in <code class="function">full_dispatch_request</code></h4>
+  <div class="source library"><pre class="line before"><span class="ws">            </span>request_started.send(self, _async_wrapper=self.ensure_sync)</pre>
+<pre class="line before"><span class="ws">            </span>rv = self.preprocess_request()</pre>
+<pre class="line before"><span class="ws">            </span>if rv is None:</pre>
+<pre class="line before"><span class="ws">                </span>rv = self.dispatch_request()</pre>
+<pre class="line before"><span class="ws">        </span>except Exception as e:</pre>
+<pre class="line current"><span class="ws">            </span>rv = self.handle_user_exception(e)
+<span class="ws">            </span>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre>
+<pre class="line after"><span class="ws">        </span>return self.finalize_request(rv)</pre>
+<pre class="line after"><span class="ws"></span> </pre>
+<pre class="line after"><span class="ws">    </span>def finalize_request(</pre>
+<pre class="line after"><span class="ws">        </span>self,</pre>
+<pre class="line after"><span class="ws">        </span>rv: ft.ResponseReturnValue | HTTPException,</pre></div>
+</div>
+
+<li><div class="frame" id="frame-1846329314976">
+  <h4>File <cite class="filename">"C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\flask_cors\extension.py"</cite>,
+      line <em class="line">176</em>,
+      in <code class="function">wrapped_function</code></h4>
+  <div class="source library"><pre class="line before"><span class="ws">        </span># These error handlers will still respect the behavior of the route</pre>
+<pre class="line before"><span class="ws">        </span>if options.get(&#34;intercept_exceptions&#34;, True):</pre>
+<pre class="line before"><span class="ws"></span> </pre>
+<pre class="line before"><span class="ws">            </span>def _after_request_decorator(f):</pre>
+<pre class="line before"><span class="ws">                </span>def wrapped_function(*args, **kwargs):</pre>
+<pre class="line current"><span class="ws">                    </span>return cors_after_request(app.make_response(f(*args, **kwargs)))
+<span class="ws">                    </span>                                            ^^^^^^^^^^^^^^^^^^</pre>
+<pre class="line after"><span class="ws"></span> </pre>
+<pre class="line after"><span class="ws">                </span>return wrapped_function</pre>
+<pre class="line after"><span class="ws"></span> </pre>
+<pre class="line after"><span class="ws">            </span>if hasattr(app, &#34;handle_exception&#34;):</pre>
+<pre class="line after"><span class="ws">                </span>app.handle_exception = _after_request_decorator(app.handle_exception)</pre></div>
+</div>
+
+<li><div class="frame" id="frame-1846329317216">
+  <h4>File <cite class="filename">"C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\flask\app.py"</cite>,
+      line <em class="line">917</em>,
+      in <code class="function">full_dispatch_request</code></h4>
+  <div class="source library"><pre class="line before"><span class="ws"></span> </pre>
+<pre class="line before"><span class="ws">        </span>try:</pre>
+<pre class="line before"><span class="ws">            </span>request_started.send(self, _async_wrapper=self.ensure_sync)</pre>
+<pre class="line before"><span class="ws">            </span>rv = self.preprocess_request()</pre>
+<pre class="line before"><span class="ws">            </span>if rv is None:</pre>
+<pre class="line current"><span class="ws">                </span>rv = self.dispatch_request()
+<span class="ws">                </span>     ^^^^^^^^^^^^^^^^^^^^^^^</pre>
+<pre class="line after"><span class="ws">        </span>except Exception as e:</pre>
+<pre class="line after"><span class="ws">            </span>rv = self.handle_user_exception(e)</pre>
+<pre class="line after"><span class="ws">        </span>return self.finalize_request(rv)</pre>
+<pre class="line after"><span class="ws"></span> </pre>
+<pre class="line after"><span class="ws">    </span>def finalize_request(</pre></div>
+</div>
+
+<li><div class="frame" id="frame-1846329317536">
+  <h4>File <cite class="filename">"C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\flask\app.py"</cite>,
+      line <em class="line">902</em>,
+      in <code class="function">dispatch_request</code></h4>
+  <div class="source library"><pre class="line before"><span class="ws">            </span>and req.method == &#34;OPTIONS&#34;</pre>
+<pre class="line before"><span class="ws">        </span>):</pre>
+<pre class="line before"><span class="ws">            </span>return self.make_default_options_response()</pre>
+<pre class="line before"><span class="ws">        </span># otherwise dispatch to the handler for that endpoint</pre>
+<pre class="line before"><span class="ws">        </span>view_args: dict[str, t.Any] = req.view_args  # type: ignore[assignment]</pre>
+<pre class="line current"><span class="ws">        </span>return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+<span class="ws">        </span>       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre>
+<pre class="line after"><span class="ws"></span> </pre>
+<pre class="line after"><span class="ws">    </span>def full_dispatch_request(self) -&gt; Response:</pre>
+<pre class="line after"><span class="ws">        </span>&#34;&#34;&#34;Dispatches the request and on top of that performs request</pre>
+<pre class="line after"><span class="ws">        </span>pre and postprocessing as well as HTTP exception catching and</pre>
+<pre class="line after"><span class="ws">        </span>error handling.</pre></div>
+</div>
+
+<li><div class="frame" id="frame-1846329318656">
+  <h4>File <cite class="filename">"C:\Users\danie\atas_sistema\backend\app\routes\auth_routes.py"</cite>,
+      line <em class="line">31</em>,
+      in <code class="function">decorated</code></h4>
+  <div class="source "><pre class="line before"><span class="ws">            </span>if not current_user:</pre>
+<pre class="line before"><span class="ws">                </span>return jsonify({&#39;message&#39;: &#39;Usuário não encontrado!&#39;}), 401</pre>
+<pre class="line before"><span class="ws">        </span>except Exception as e:</pre>
+<pre class="line before"><span class="ws">            </span>return jsonify({&#39;message&#39;: &#39;Token inválido!&#39;, &#39;error&#39;: str(e)}), 401</pre>
+<pre class="line before"><span class="ws"></span> </pre>
+<pre class="line current"><span class="ws">        </span>return f(current_user, *args, **kwargs)
+<span class="ws">        </span>       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre>
+<pre class="line after"><span class="ws">    </span>return decorated</pre>
+<pre class="line after"><span class="ws"></span> </pre>
+<pre class="line after"><span class="ws"></span>@auth_bp.route(&#39;/login&#39;, methods=[&#39;POST&#39;])</pre>
+<pre class="line after"><span class="ws"></span>def login():</pre>
+<pre class="line after"><span class="ws">    </span>dados = request.get_json()</pre></div>
+</div>
+
+<li><div class="frame" id="frame-1846329318976">
+  <h4>File <cite class="filename">"C:\Users\danie\atas_sistema\backend\app\routes\atas_routes.py"</cite>,
+      line <em class="line">69</em>,
+      in <code class="function">create_ata</code></h4>
+  <div class="source "><pre class="line before"><span class="ws"></span># ==========================================</pre>
+<pre class="line before"><span class="ws"></span>@api_bp.route(&#39;/atas&#39;, methods=[&#39;POST&#39;])</pre>
+<pre class="line before"><span class="ws"></span>@token_required</pre>
+<pre class="line before"><span class="ws"></span>def create_ata(current_user):</pre>
+<pre class="line before"><span class="ws">    </span>dados = request.get_json()</pre>
+<pre class="line current"><span class="ws">    </span>nova_ata = Ata(
+<span class="ws">    </span>           </pre>
+<pre class="line after"><span class="ws">        </span>professor_id=dados.get(&#39;professor_id&#39;),</pre>
+<pre class="line after"><span class="ws">        </span>coordenador_id=current_user.id,</pre>
+<pre class="line after"><span class="ws">        </span>registros_portal=dados.get(&#39;registros_portal&#39;, &#39;&#39;),</pre>
+<pre class="line after"><span class="ws">        </span>observacoes_professor_texto=dados.get(&#39;observacoes_professor_texto&#39;, &#39;&#39;),</pre>
+<pre class="line after"><span class="ws">        </span>observacoes_coordenacao_texto=dados.get(&#39;observacoes_coordenacao_texto&#39;, &#39;&#39;),</pre></div>
+</div>
+
+<li><div class="frame" id="frame-1846329319136">
+  <h4>File <cite class="filename">"&lt;string&gt;"</cite>,
+      line <em class="line">4</em>,
+      in <code class="function">__init__</code></h4>
+  <div class="source "></div>
+</div>
+
+<li><div class="frame" id="frame-1846329319296">
+  <h4>File <cite class="filename">"C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\sqlalchemy\orm\state.py"</cite>,
+      line <em class="line">596</em>,
+      in <code class="function">_initialize_instance</code></h4>
+  <div class="source library"><pre class="line before"><span class="ws">        </span>manager.dispatch.init(self, args, kwargs)</pre>
+<pre class="line before"><span class="ws"></span> </pre>
+<pre class="line before"><span class="ws">        </span>try:</pre>
+<pre class="line before"><span class="ws">            </span>manager.original_init(*mixed[1:], **kwargs)</pre>
+<pre class="line before"><span class="ws">        </span>except:</pre>
+<pre class="line current"><span class="ws">            </span>with util.safe_reraise():
+<span class="ws">            </span>     ^^^^^^^^^^^^^^^^^^^</pre>
+<pre class="line after"><span class="ws">                </span>manager.dispatch.init_failure(self, args, kwargs)</pre>
+<pre class="line after"><span class="ws"></span> </pre>
+<pre class="line after"><span class="ws">    </span>def get_history(self, key: str, passive: PassiveFlag) -&gt; History:</pre>
+<pre class="line after"><span class="ws">        </span>return self.manager[key].impl.get_history(self, self.dict, passive)</pre>
+<pre class="line after"><span class="ws"></span> </pre></div>
+</div>
+
+<li><div class="frame" id="frame-1846329319456">
+  <h4>File <cite class="filename">"C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\sqlalchemy\util\langhelpers.py"</cite>,
+      line <em class="line">121</em>,
+      in <code class="function">__exit__</code></h4>
+  <div class="source library"><pre class="line before"><span class="ws">        </span># see #2703 for notes</pre>
+<pre class="line before"><span class="ws">        </span>if type_ is None:</pre>
+<pre class="line before"><span class="ws">            </span>exc_type, exc_value, exc_tb = self._exc_info</pre>
+<pre class="line before"><span class="ws">            </span>assert exc_value is not None</pre>
+<pre class="line before"><span class="ws">            </span>self._exc_info = None  # remove potential circular references</pre>
+<pre class="line current"><span class="ws">            </span>raise exc_value.with_traceback(exc_tb)
+<span class="ws">            </span>^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre>
+<pre class="line after"><span class="ws">        </span>else:</pre>
+<pre class="line after"><span class="ws">            </span>self._exc_info = None  # remove potential circular references</pre>
+<pre class="line after"><span class="ws">            </span>assert value is not None</pre>
+<pre class="line after"><span class="ws">            </span>raise value.with_traceback(traceback)</pre>
+<pre class="line after"><span class="ws"></span> </pre></div>
+</div>
+
+<li><div class="frame" id="frame-1846329319616">
+  <h4>File <cite class="filename">"C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\sqlalchemy\orm\state.py"</cite>,
+      line <em class="line">594</em>,
+      in <code class="function">_initialize_instance</code></h4>
+  <div class="source library"><pre class="line before"><span class="ws">        </span>manager = self.manager</pre>
+<pre class="line before"><span class="ws"></span> </pre>
+<pre class="line before"><span class="ws">        </span>manager.dispatch.init(self, args, kwargs)</pre>
+<pre class="line before"><span class="ws"></span> </pre>
+<pre class="line before"><span class="ws">        </span>try:</pre>
+<pre class="line current"><span class="ws">            </span>manager.original_init(*mixed[1:], **kwargs)
+<span class="ws">            </span>^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre>
+<pre class="line after"><span class="ws">        </span>except:</pre>
+<pre class="line after"><span class="ws">            </span>with util.safe_reraise():</pre>
+<pre class="line after"><span class="ws">                </span>manager.dispatch.init_failure(self, args, kwargs)</pre>
+<pre class="line after"><span class="ws"></span> </pre>
+<pre class="line after"><span class="ws">    </span>def get_history(self, key: str, passive: PassiveFlag) -&gt; History:</pre></div>
+</div>
+
+<li><div class="frame" id="frame-1846329319776">
+  <h4>File <cite class="filename">"C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\sqlalchemy\orm\decl_base.py"</cite>,
+      line <em class="line">2179</em>,
+      in <code class="function">_declarative_constructor</code></h4>
+  <div class="source library"><pre class="line before"><span class="ws">    </span>for example, any mapped columns or relationships.</pre>
+<pre class="line before"><span class="ws">    </span>&#34;&#34;&#34;</pre>
+<pre class="line before"><span class="ws">    </span>cls_ = type(self)</pre>
+<pre class="line before"><span class="ws">    </span>for k in kwargs:</pre>
+<pre class="line before"><span class="ws">        </span>if not hasattr(cls_, k):</pre>
+<pre class="line current"><span class="ws">            </span>raise TypeError(
+<span class="ws">            </span>^</pre>
+<pre class="line after"><span class="ws">                </span>&#34;%r is an invalid keyword argument for %s&#34; % (k, cls_.__name__)</pre>
+<pre class="line after"><span class="ws">            </span>)</pre>
+<pre class="line after"><span class="ws">        </span>setattr(self, k, kwargs[k])</pre>
+<pre class="line after"><span class="ws"></span> </pre>
+<pre class="line after"><span class="ws"></span> </pre></div>
+</div>
+</ul>
+  <blockquote>TypeError: &#39;status&#39; is an invalid keyword argument for Ata
+</blockquote>
+</div>
+
+<div class="plain">
+    <p>
+      This is the Copy/Paste friendly version of the traceback.
+    </p>
+    <textarea cols="50" rows="10" name="code" readonly>Traceback (most recent call last):
+  File &#34;C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\flask\app.py&#34;, line 1536, in __call__
+    return self.wsgi_app(environ, start_response)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &#34;C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\flask\app.py&#34;, line 1514, in wsgi_app
+    response = self.handle_exception(e)
+  File &#34;C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\flask_cors\extension.py&#34;, line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File &#34;C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\flask\app.py&#34;, line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File &#34;C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\flask\app.py&#34;, line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File &#34;C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\flask_cors\extension.py&#34;, line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File &#34;C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\flask\app.py&#34;, line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File &#34;C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\flask\app.py&#34;, line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File &#34;C:\Users\danie\atas_sistema\backend\app\routes\auth_routes.py&#34;, line 31, in decorated
+    return f(current_user, *args, **kwargs)
+  File &#34;C:\Users\danie\atas_sistema\backend\app\routes\atas_routes.py&#34;, line 69, in create_ata
+    nova_ata = Ata(
+    
+  File &#34;&lt;string&gt;&#34;, line 4, in __init__
+  File &#34;C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\sqlalchemy\orm\state.py&#34;, line 596, in _initialize_instance
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File &#34;C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\sqlalchemy\util\langhelpers.py&#34;, line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File &#34;C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\sqlalchemy\orm\state.py&#34;, line 594, in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File &#34;C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\sqlalchemy\orm\decl_base.py&#34;, line 2179, in _declarative_constructor
+    raise TypeError(
+    ^
+TypeError: &#39;status&#39; is an invalid keyword argument for Ata
+</textarea>
+</div>
+<div class="explanation">
+  The debugger caught an exception in your WSGI application.  You can now
+  look at the traceback which led to the error.  <span class="nojavascript">
+  If you enable JavaScript you can also use additional features such as code
+  execution (if the evalex feature is enabled), automatic pasting of the
+  exceptions and much more.</span>
+</div>
+      <div class="footer">
+        Brought to you by <strong class="arthur">DON'T PANIC</strong>, your
+        friendly Werkzeug powered traceback interpreter.
+      </div>
+    </div>
+
+    <div class="pin-prompt">
+      <div class="inner">
+        <h3>Console Locked</h3>
+        <p>
+          The console is locked and needs to be unlocked by entering the PIN.
+          You can find the PIN printed out on the standard output of your
+          shell that runs the server.
+        <form>
+          <p>PIN:
+            <input type=text name=pin size=14>
+            <input type=submit name=btn value="Confirm Pin">
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
+
+<!--
+
+Traceback (most recent call last):
+  File "C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\flask\app.py", line 1536, in __call__
+    return self.wsgi_app(environ, start_response)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\flask\app.py", line 1514, in wsgi_app
+    response = self.handle_exception(e)
+  File "C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\flask_cors\extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+                                                ~^^^^^^^^^^^^^^^^^
+  File "C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\danie\atas_sistema\backend\app\routes\auth_routes.py", line 31, in decorated
+    return f(current_user, *args, **kwargs)
+  File "C:\Users\danie\atas_sistema\backend\app\routes\atas_routes.py", line 69, in create_ata
+    nova_ata = Ata(
+    
+  File "<string>", line 4, in __init__
+  File "C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\sqlalchemy\orm\state.py", line 596, in _initialize_instance
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\sqlalchemy\orm\state.py", line 594, in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\danie\atas_sistema\backend\venv\Lib\site-packages\sqlalchemy\orm\decl_base.py", line 2179, in _declarative_constructor
+    raise TypeError(
+    ^
+TypeError: 'status' is an invalid keyword argument for Ata
+
+
+-->
