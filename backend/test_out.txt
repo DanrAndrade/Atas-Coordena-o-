@@ -1,0 +1,29 @@
+
+==================================================
+ SERVIDOR IASC - SISTEMA DE ATAS
+==================================================
+ ROTA ATIVA: /api/v1/professores
+ ROTA ATIVA: /api/v1/professores
+ ROTA ATIVA: /api/v1/professores/importar
+ ROTA ATIVA: /api/v1/atas
+ ROTA ATIVA: /api/v1/professores/<int:id>/atas
+ ROTA ATIVA: /api/v1/professores/<int:id>/pendencias
+ ROTA ATIVA: /api/v1/compromissos/<int:id>/concluir
+ ROTA ATIVA: /api/v1/dashboard
+ ROTA ATIVA: /api/v1/tags
+ ROTA ATIVA: /api/v1/tags
+ ROTA ATIVA: /api/v1/tags/<int:id>
+ ROTA ATIVA: /api/v1/tags/<int:id>
+ ROTA ATIVA: /api/v1/atas/<int:id>/pdf
+ ROTA ATIVA: /api/v1/auth/login
+==================================================
+
+1. Buscando usuário para testar o Login...
+2. Testando Login (/api/v1/auth/login)
+ Token gerado com sucesso.
+3. Testando criação de Tags (/api/v1/tags)
+ Tag criada com sucesso! ID: 11
+4. Testando listagem/criação de Professores
+ Usando professor existente! ID: 1
+5. Testando criação da Ata (/api/v1/atas)
+ Erro ao criar ata: {'code': 500, 'description': '(pymysql.err.OperationalError) (1054, "Unknown column \'status\' in \'field list\'")\n[SQL: INSERT INTO ata (professor_id, coordenador_id, data_criacao, registros_portal, observacoes_professor_texto, observacoes_coordenacao_texto, temas_ids, tags_obs_ids, status) VALUES (%(professor_id)s, %(coordenador_id)s, %(data_criacao)s, %(registros_portal)s, %(observacoes_professor_texto)s, %(observacoes_coordenacao_texto)s, %(temas_ids)s, %(tags_obs_ids)s, %(status)s)]\n[parameters: {\'professor_id\': 1, \'coordenador_id\': 1, \'data_criacao\': datetime.datetime(2026, 3, 24, 19, 19, 45, 795651), \'registros_portal\': \'Sim\', \'observacoes_professor_texto\': \'Tudo rodando bem\', \'observacoes_coordenacao_texto\': \'Aprovado via script\', \'temas_ids\': \'[11]\', \'tags_obs_ids\': \'[]\', \'status\': \'fechada\'}]\n(Background on this error at: https://sqlalche.me/e/20/e3q8)', 'name': 'Internal Server Error'}

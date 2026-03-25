@@ -1,7 +1,7 @@
 import jwt
 import datetime
 from flask import Blueprint, request, jsonify, current_app
-from ..models import db, Coordenador
+from app.models import db, Coordenador
 from functools import wraps
 
 auth_bp = Blueprint('auth', __name__)
@@ -9,6 +9,10 @@ auth_bp = Blueprint('auth', __name__)
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
+        # Permite sempre as requisições preparatórias do navegador
+        if request.method == 'OPTIONS':
+            return jsonify({}), 200
+            
         token = None
         if 'Authorization' in request.headers:
             parts = request.headers['Authorization'].split()
@@ -16,17 +20,23 @@ def token_required(f):
                 token = parts[1]
         
         if not token:
-            return jsonify({'message': 'Token é obrigatório!'}), 401
+            return jsonify({'message': 'Acesso Negado. Token ausente.'}), 401
         
         try:
-            # We use a simple secret key for now (e.g. from app config)
             secret = current_app.config.get('SECRET_KEY') or 'super-secret-key-atas'
             data = jwt.decode(token, secret, algorithms=["HS256"])
-            current_user = Coordenador.query.get(data['coordenador_id'])
+            
+            # Se for um token velho sem ID, recusa o acesso de imediato sem quebrar o servidor
+            coordenador_id = data.get('coordenador_id')
+            if not coordenador_id:
+                return jsonify({'message': 'Sessão desatualizada. Faça login novamente.'}), 401
+                
+            current_user = Coordenador.query.get(coordenador_id)
             if not current_user:
                 return jsonify({'message': 'Usuário não encontrado!'}), 401
+                
         except Exception as e:
-            return jsonify({'message': 'Token inválido!', 'error': str(e)}), 401
+            return jsonify({'message': 'Sessão inválida ou expirada!'}), 401
             
         return f(current_user, *args, **kwargs)
     return decorated
@@ -58,13 +68,4 @@ def login():
             'nome': usuario.nome,
             'email': usuario.email
         }
-    }), 200
-
-@auth_bp.route('/me', methods=['GET'])
-@token_required
-def get_me(current_user):
-    return jsonify({
-        'id': current_user.id,
-        'nome': current_user.nome,
-        'email': current_user.email
     }), 200

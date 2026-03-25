@@ -13,6 +13,12 @@ function NovaAta() {
     const [professor, setProfessor] = useState(null);
     const [coordenador, setCoordenador] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [showLoading, setShowLoading] = useState(false);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setShowLoading(true), 300);
+        return () => clearTimeout(timer);
+    }, []);
     
     const [dadosAta, setDadosAta] = useState({
         registros_portal: 'Sim',
@@ -157,13 +163,14 @@ function NovaAta() {
         try {
             await api.post('/atas', payload);
             setMensagemFinal({ texto: 'Ata salva com sucesso! Redirecionando...', tipo: 'success' });
-            setTimeout(() => navigate(`/professor/${id}`), 1500);
+            setTimeout(() => navigate(`/professor/${id}`), 300);
         } catch (error) {
             setMensagemFinal({ texto: 'Erro ao salvar a ata: ' + (error.response?.data?.erro || error.message), tipo: 'error' });
         }
     };
 
     if (loading || !professor || !coordenador) {
+        if (!showLoading) return null;
         return (
             <div className="flex h-screen items-center justify-center bg-slate-50">
                 <div className="text-brand-primary font-bold animate-pulse">Preparando documento...</div>
@@ -457,6 +464,7 @@ function NovaAta() {
                                         <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">Prazo (Opcional)</label>
                                         <input 
                                             type="date"
+                                            min={`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(new Date().getDate()).padStart(2, '0')}`}
                                             className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/30 transition-all font-medium text-slate-700 text-center"
                                             value={comp.data_prazo_limite}
                                             onChange={(e) => handleCompromissoChange(index, 'data_prazo_limite', e.target.value)}

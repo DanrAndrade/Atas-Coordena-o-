@@ -16,5 +16,12 @@ with app.app_context():
     except Exception as e:
         print("tags_obs_ids já existe ou erro:", e)
 
+    try:
+        db.session.execute(text("ALTER TABLE ata ADD COLUMN status VARCHAR(20) DEFAULT 'fechada';"))
+    except Exception as e:
+        print("status já existe ou erro:", e)
+
+
+
     db.session.commit()
     print("Banco de dados alterado com sucesso.")

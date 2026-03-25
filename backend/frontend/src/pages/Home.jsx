@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../services/api';
 import { 
   Search, Plus, LayoutDashboard, Users, Bell, Menu, X, 
   CheckCircle2, UploadCloud, ChevronLeft, ChevronRight, FileText, Settings
 } from 'lucide-react';
+import Sidebar from '../components/Sidebar';
 
 function Home() {
     const navigate = useNavigate();
     const [professores, setProfessores] = useState([]);
-    const [menuAtivo, setMenuAtivo] = useState('professores'); 
+    const location = useLocation();
+    const [menuAtivo, setMenuAtivo] = useState(location.state?.menuAtivo || 'professores'); 
     
     // Estados do Menu Retrátil e Responsivo
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -29,7 +31,11 @@ function Home() {
         total_professores: 0,
         total_atas: 0,
         pendencias_abertas: 0,
-        top_tags_geral: []
+        pendencias_concluidas: 0,
+        portal_em_dia: 0,
+        portal_pendente: 0,
+        top_temas: [],
+        top_observacoes: []
     });
 
     const carregarProfessores = () => {
@@ -65,7 +71,7 @@ function Home() {
             setMensagem({ texto: 'Professor adicionado com sucesso.', tipo: 'success' });
             setFormData({ nome: '', disciplina: '', turmas: '' });
             carregarProfessores();
-            setTimeout(() => { setIsModalOpen(false); setMensagem({ texto: '', tipo: '' }); }, 1500);
+            setTimeout(() => { setIsModalOpen(false); setMensagem({ texto: '', tipo: '' }); }, 300);
         } catch (error) {
             setMensagem({ texto: error.response?.data?.erro || 'Erro ao salvar.', tipo: 'error' });
         }
@@ -81,7 +87,7 @@ function Home() {
             setMensagem({ texto: res.data.mensagem || 'Planilha importada com sucesso.', tipo: 'success' });
             setArquivo(null); 
             carregarProfessores(); 
-            setTimeout(() => { setIsModalOpen(false); setMensagem({ texto: '', tipo: '' }); }, 2000);
+            setTimeout(() => { setIsModalOpen(false); setMensagem({ texto: '', tipo: '' }); }, 300);
         } catch (error) {
             setMensagem({ texto: error.response?.data?.erro || 'Erro ao importar.', tipo: 'error' });
         }
@@ -98,70 +104,13 @@ function Home() {
                 />
             )}
 
-            {/* SIDEBAR RETRÁTIL E RESPONSIVA */}
-            <aside 
-                className={`fixed inset-y-0 left-0 z-40 bg-white border-r border-gray-200 flex flex-col transition-all duration-300 ease-in-out
-                ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
-                lg:translate-x-0 lg:static ${isSidebarCollapsed ? 'w-20' : 'w-64'}`}
-            >
-                <div className={`h-16 flex items-center border-b border-gray-100 ${isSidebarCollapsed ? 'justify-center px-0' : 'justify-between px-6'}`}>
-                    {isSidebarCollapsed ? (
-                        <FileText className="w-8 h-8 text-brand-primary" />
-                    ) : (
-                        <img src="/images/logo.png" alt="Logo IASC" className="h-8 object-contain" />
-                    )}
-                    
-                    <button 
-                        onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)} 
-                        className="hidden lg:flex p-1.5 text-slate-400 hover:bg-gray-100 hover:text-brand-primary rounded-lg transition-colors"
-                    >
-                        {isSidebarCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
-                    </button>
-
-                    <button 
-                        onClick={() => setIsMobileMenuOpen(false)} 
-                        className="lg:hidden p-1.5 text-slate-400 hover:bg-gray-100 rounded-lg"
-                    >
-                        <X size={20} />
-                    </button>
-                </div>
-                
-                <div className="flex-1 overflow-y-auto py-6 px-3 space-y-1 custom-scrollbar">
-                    {!isSidebarCollapsed && (
-                        <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 px-3 mt-2">
-                            Menu Principal
-                        </div>
-                    )}
-                    
-                    <button 
-                        onClick={() => { setMenuAtivo('dashboard'); setIsMobileMenuOpen(false); }}
-                        className={`flex items-center w-full py-3 rounded-xl transition-all text-sm font-medium ${isSidebarCollapsed ? 'justify-center px-0' : 'px-4 gap-3'} ${menuAtivo === 'dashboard' ? 'bg-brand-light text-brand-primary' : 'text-slate-500 hover:bg-gray-50 hover:text-slate-700'}`}
-                        title={isSidebarCollapsed ? "Dashboard" : ""}
-                    >
-                        <LayoutDashboard size={22} />
-                        {!isSidebarCollapsed && <span>Dashboard</span>}
-                    </button>
-                    
-                    <button 
-                        onClick={() => { setMenuAtivo('professores'); setIsMobileMenuOpen(false); }}
-                        className={`flex items-center w-full py-3 rounded-xl transition-all text-sm font-medium ${isSidebarCollapsed ? 'justify-center px-0' : 'px-4 gap-3'} ${menuAtivo === 'professores' ? 'bg-brand-light text-brand-primary' : 'text-slate-500 hover:bg-gray-50 hover:text-slate-700'}`}
-                        title={isSidebarCollapsed ? "Professores" : ""}
-                    >
-                        <Users size={22} />
-                        {!isSidebarCollapsed && <span>Professores</span>}
-                    </button>
-
-                    {/* NOVO BOTÃO DE CONFIGURAÇÕES */}
-                    <button 
-                        onClick={() => navigate('/configuracoes')}
-                        className={`flex items-center w-full py-3 rounded-xl transition-all text-sm font-medium ${isSidebarCollapsed ? 'justify-center px-0' : 'px-4 gap-3'} text-slate-500 hover:bg-gray-50 hover:text-slate-700`}
-                        title={isSidebarCollapsed ? "Configurações" : ""}
-                    >
-                        <Settings size={22} />
-                        {!isSidebarCollapsed && <span>Configurações</span>}
-                    </button>
-                </div>
-            </aside>
+            {/* SIDEBAR COMPONETIZADA */}
+            <Sidebar 
+                isMobileMenuOpen={isMobileMenuOpen} 
+                setIsMobileMenuOpen={setIsMobileMenuOpen} 
+                activeMenuOverride={menuAtivo} 
+                onMenuClick={setMenuAtivo} 
+            />
 
             {/* CONTEÚDO PRINCIPAL */}
             <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
@@ -182,16 +131,18 @@ function Home() {
                             <Bell size={20} />
                         </button>
                         <div className="h-8 w-px bg-gray-200 hidden md:block"></div>
-                        <div className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-1.5 rounded-xl transition-colors pr-2">
-                            <div className="text-right hidden md:block">
-                                <p className="text-sm font-bold text-slate-700 leading-tight">Painel de Controle</p>
-                                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wide">Coordenação</p>
+                        <div className="flex items-center gap-3 cursor-pointer hover:bg-red-50 p-1.5 rounded-xl transition-colors pr-3 group text-left" onClick={() => {
+                            localStorage.removeItem('@AtasApp:token');
+                            navigate('/login');
+                        }}>
+                            <div className="hidden md:block">
+                                <p className="text-sm font-bold text-slate-700 leading-tight group-hover:text-red-600 transition-colors">
+                                    {JSON.parse(localStorage.getItem('@AtasApp:usuario') || 'null')?.nome || 'Usuário'}
+                                </p>
+                                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wide group-hover:text-red-400">Sair do Sistema</p>
                             </div>
-                            <div className="w-9 h-9 bg-brand-primary text-white rounded-lg flex items-center justify-center font-bold shadow-md shadow-brand-primary/20" onClick={() => {
-                                localStorage.removeItem('@AtasApp:token');
-                                navigate('/login');
-                            }}>
-                                Sair
+                            <div className="w-9 h-9 bg-brand-primary group-hover:bg-red-500 text-white rounded-lg flex items-center justify-center font-bold shadow-md transition-colors">
+                                {JSON.parse(localStorage.getItem('@AtasApp:usuario') || 'null')?.nome?.charAt(0).toUpperCase() || 'S'}
                             </div>
                         </div>
                     </div>
@@ -207,51 +158,102 @@ function Home() {
                                     <p className="text-slate-500 text-sm">Resumo geral das atas e compromissos firmados pela coordenação.</p>
                                 </div>
                                 
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                                     <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-center">
                                         <div className="flex justify-between items-start">
                                             <div>
-                                                <p className="text-sm font-bold text-slate-400 uppercase tracking-wider">Corpo Docente</p>
-                                                <p className="text-4xl font-black text-slate-800 mt-2">{dashboard.total_professores}</p>
+                                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Corpo Docente</p>
+                                                <p className="text-3xl font-black text-slate-800 mt-2">{dashboard.total_professores}</p>
                                             </div>
-                                            <div className="p-3 bg-brand-light text-brand-primary rounded-xl"><Users size={24} /></div>
+                                            <div className="p-3 bg-brand-light text-brand-primary rounded-xl"><Users size={20} /></div>
                                         </div>
                                     </div>
                                     
                                     <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-center">
                                         <div className="flex justify-between items-start">
                                             <div>
-                                                <p className="text-sm font-bold text-slate-400 uppercase tracking-wider">Atas Geradas</p>
-                                                <p className="text-4xl font-black text-slate-800 mt-2">{dashboard.total_atas}</p>
+                                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Atas Geradas</p>
+                                                <p className="text-3xl font-black text-slate-800 mt-2">{dashboard.total_atas}</p>
                                             </div>
-                                            <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl"><FileText size={24} /></div>
+                                            <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl"><FileText size={20} /></div>
                                         </div>
                                     </div>
                                     
                                     <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-center">
                                         <div className="flex justify-between items-start">
-                                            <div>
-                                                <p className="text-sm font-bold text-slate-400 uppercase tracking-wider">Pendências Ativas</p>
-                                                <p className="text-4xl font-black text-slate-800 mt-2">{dashboard.pendencias_abertas}</p>
+                                            <div className="w-full">
+                                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Metas Firmadas</p>
+                                                <div className="flex justify-between items-center text-sm font-bold text-slate-600 mt-1">
+                                                    <span 
+                                                        className="flex items-center gap-1.5 cursor-help" 
+                                                        title={dashboard.professores_metas_abertas?.length > 0 ? `Professores com Metas:\n${dashboard.professores_metas_abertas.join('\n')}` : "Nenhuma meta aberta"}
+                                                    ><div className="w-2 h-2 rounded-full bg-amber-400"></div> Abertas: {dashboard.pendencias_abertas}</span>
+                                                    <span className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-emerald-400"></div> Concluídas: {dashboard.pendencias_concluidas}</span>
+                                                </div>
+                                                <div className="w-full bg-slate-100 rounded-full h-1.5 mt-3 overflow-hidden">
+                                                    <div className="bg-emerald-400 h-1.5 rounded-full" style={{ width: dashboard.pendencias_abertas + dashboard.pendencias_concluidas > 0 ? `${(dashboard.pendencias_concluidas / (dashboard.pendencias_abertas + dashboard.pendencias_concluidas)) * 100}%` : '0%' }}></div>
+                                                </div>
                                             </div>
-                                            <div className="p-3 bg-amber-50 text-amber-600 rounded-xl"><CheckCircle2 size={24} /></div>
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-center">
+                                        <div className="flex justify-between items-start">
+                                            <div className="w-full">
+                                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Portal do Professor</p>
+                                                <div className="flex justify-between items-center text-sm font-bold text-slate-600 mt-1">
+                                                    <span className="flex items-center gap-1.5 leading-tight"><div className="w-2 h-2 rounded-full bg-brand-primary"></div> Em Dia: {dashboard.portal_em_dia}</span>
+                                                    <span 
+                                                        className="flex items-center gap-1.5 leading-tight cursor-help"
+                                                        title={dashboard.professores_portal_pendente?.length > 0 ? `Professores Pendentes/Incompletos:\n${dashboard.professores_portal_pendente.join('\n')}` : "Nenhuma pendência de portal"}
+                                                    ><div className="w-2 h-2 rounded-full bg-red-400"></div> Pendentes: {dashboard.portal_pendente}</span>
+                                                </div>
+                                                <div className="w-full bg-slate-100 rounded-full h-1.5 mt-3 overflow-hidden flex gap-[2px]">
+                                                    <div className="bg-brand-primary h-1.5 rounded-full" style={{ flexGrow: dashboard.portal_em_dia }}></div>
+                                                    <div className="bg-red-400 h-1.5 rounded-full" style={{ flexGrow: dashboard.portal_pendente }}></div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 
-                                <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
-                                    <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Principais Observações (Geral)</h3>
-                                    {dashboard.top_tags_geral?.length === 0 ? (
-                                        <p className="text-slate-500 text-sm font-medium">Não há dados suficientes.</p>
-                                    ) : (
-                                        <div className="flex flex-wrap gap-3">
-                                            {dashboard.top_tags_geral?.map((tag, idx) => (
-                                                <span key={idx} className="px-4 py-2 bg-slate-100 text-slate-700 border border-slate-200 rounded-xl font-bold text-sm shadow-sm">
-                                                    {tag}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    )}
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                                    <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-start">
+                                        <h3 className="text-sm font-bold text-emerald-600 uppercase tracking-wider mb-4">Temas mais Abordados</h3>
+                                        {dashboard.top_temas?.length === 0 ? (
+                                            <div className="text-slate-500 italic text-sm text-center py-4 bg-slate-50 rounded-xl">Sem temas registrados.</div>
+                                        ) : (
+                                            <div className="space-y-3">
+                                                {dashboard.top_temas?.map((t, i) => (
+                                                    <div key={`tema-${i}`} className="flex justify-between items-center p-3 bg-slate-50 rounded-xl border border-emerald-100">
+                                                        <span className="text-sm font-semibold text-slate-700">{t.nome}</span>
+                                                        <div className="text-right flex items-center gap-3">
+                                                            <div className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">{t.quantidade}x</div>
+                                                            <div className="text-[11px] font-bold text-slate-400 min-w-8 text-right bg-white p-1 rounded-md border border-slate-200 shadow-sm">{t.porcentagem}%</div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-start">
+                                        <h3 className="text-sm font-bold text-amber-600 uppercase tracking-wider mb-4">Principais Observações</h3>
+                                        {dashboard.top_observacoes?.length === 0 ? (
+                                            <div className="text-slate-500 italic text-sm text-center py-4 bg-slate-50 rounded-xl">Sem observações.</div>
+                                        ) : (
+                                            <div className="space-y-3">
+                                                {dashboard.top_observacoes?.map((t, i) => (
+                                                    <div key={`obs-${i}`} className="flex justify-between items-center p-3 bg-slate-50 rounded-xl border border-amber-100">
+                                                        <span className="text-sm font-semibold text-slate-700">{t.nome}</span>
+                                                        <div className="text-right flex items-center gap-3">
+                                                            <div className="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-md">{t.quantidade}x</div>
+                                                            <div className="text-[11px] font-bold text-slate-400 min-w-8 text-right bg-white p-1 rounded-md border border-slate-200 shadow-sm">{t.porcentagem}%</div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         )}

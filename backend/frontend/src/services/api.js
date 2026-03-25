@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://127.0.0.1:5000/api/v1' 
+    // Alterado de 127.0.0.1 para localhost para casar com a origem do React
+    baseURL: 'http://localhost:5000/api/v1' 
 });
 
 api.interceptors.request.use((config) => {
@@ -11,5 +12,18 @@ api.interceptors.request.use((config) => {
     }
     return config;
 });
+
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        // Se der erro 401, limpa tudo e atira para o login
+        if (error.response && error.response.status === 401) {
+            localStorage.removeItem('@AtasApp:token');
+            localStorage.removeItem('@AtasApp:user');
+            window.location.href = '/login';
+        }
+        return Promise.reject(error);
+    }
+);
 
 export default api;

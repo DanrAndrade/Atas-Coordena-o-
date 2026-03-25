@@ -2,15 +2,22 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { 
-    Tag, Plus, Trash2, Edit2, CheckCircle2, X, ArrowLeft, Settings
+    Tag, Plus, Trash2, Edit2, CheckCircle2, X, ArrowLeft, Settings, Menu, Bell
 } from 'lucide-react';
+import Sidebar from '../components/Sidebar';
 
 function Configuracoes() {
     const navigate = useNavigate();
     const [tags, setTags] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [showLoading, setShowLoading] = useState(false);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setShowLoading(true), 300);
+        return () => clearTimeout(timer);
+    }, []);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     
-    // Form state
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [currentTagId, setCurrentTagId] = useState(null);
@@ -61,7 +68,7 @@ function Configuracoes() {
                 setMensagem({ texto: 'Anotação criada!', tipo: 'success' });
             }
             carregarTags();
-            setTimeout(() => { setIsModalOpen(false); }, 1500);
+            setTimeout(() => { setIsModalOpen(false); }, 300);
         } catch (error) {
             setMensagem({ texto: error.response?.data?.erro || 'Erro ao salvar.', tipo: 'error' });
         }
@@ -80,6 +87,7 @@ function Configuracoes() {
     };
 
     if (loading) {
+        if (!showLoading) return null;
         return (
             <div className="flex h-screen items-center justify-center bg-slate-50">
                 <div className="text-brand-primary font-bold animate-pulse">Carregando Configurações...</div>
@@ -93,36 +101,46 @@ function Configuracoes() {
     return (
         <div className="flex h-screen bg-slate-50 overflow-hidden font-sans">
             
-            {/* SIDEBAR COM LOGO (Simplificada) */}
-            <aside className="hidden lg:flex w-64 bg-white border-r border-gray-200 flex-col z-30">
-                <div className="h-16 flex items-center justify-center px-6 border-b border-gray-100">
-                    <img src="/images/logo.png" alt="Logo IASC" className="h-8 object-contain" />
-                </div>
-                <div className="flex-1 overflow-y-auto py-6 px-4 space-y-1">
-                    <button onClick={() => navigate('/')} className="flex items-center gap-3 w-full px-4 py-3 rounded-xl transition-all text-sm font-medium text-slate-500 hover:bg-gray-50">
-                        <ArrowLeft size={20} />
-                        <span>Voltar ao Início</span>
-                    </button>
-                    <div className="mt-8 px-4 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-                        Painel
-                    </div>
-                    <button className="flex items-center w-full py-3 px-4 rounded-xl transition-all text-sm font-medium bg-brand-light text-brand-primary gap-3">
-                        <Settings size={22} />
-                        <span>Configurações</span>
-                    </button>
-                </div>
-            </aside>
+            {isMobileMenuOpen && (
+                <div 
+                    className="fixed inset-0 bg-black/50 z-30 lg:hidden transition-opacity"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                />
+            )}
+            <Sidebar isMobileMenuOpen={isMobileMenuOpen} setIsMobileMenuOpen={setIsMobileMenuOpen} />
 
             {/* CONTEÚDO PRINCIPAL */}
             <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-                <header className="h-16 bg-white border-b border-gray-200 flex items-center px-4 lg:px-8 shrink-0 z-20 shadow-sm gap-4">
-                    <button 
-                        onClick={() => navigate('/')}
-                        className="lg:hidden p-2 text-slate-500 hover:bg-gray-100 hover:text-brand-primary rounded-lg transition-colors"
-                    >
-                        <ArrowLeft size={20} />
-                    </button>
-                    <div className="text-sm font-bold text-slate-700">Configurações Gerais</div>
+                <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 lg:px-8 shrink-0 z-20 shadow-sm gap-4">
+                    <div className="flex items-center gap-4">
+                        <button 
+                            onClick={() => setIsMobileMenuOpen(true)} 
+                            className="lg:hidden p-2 text-slate-500 hover:bg-gray-100 hover:text-brand-primary rounded-lg transition-colors"
+                        >
+                            <Menu size={24} />
+                        </button>
+                        <div className="text-sm font-bold text-slate-700 hidden lg:block">Configurações Gerais</div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <button className="p-2 text-slate-400 hover:bg-gray-100 hover:text-brand-primary rounded-full transition-colors">
+                            <Bell size={20} />
+                        </button>
+                        <div className="h-8 w-px bg-gray-200 hidden md:block"></div>
+                        <div className="flex items-center gap-3 cursor-pointer hover:bg-red-50 p-1.5 rounded-xl transition-colors pr-3 group text-left" onClick={() => {
+                            localStorage.removeItem('@AtasApp:token');
+                            navigate('/login');
+                        }}>
+                            <div className="hidden md:block">
+                                <p className="text-sm font-bold text-slate-700 leading-tight group-hover:text-red-600 transition-colors">
+                                    {JSON.parse(localStorage.getItem('@AtasApp:usuario') || 'null')?.nome || 'Usuário'}
+                                </p>
+                                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wide group-hover:text-red-400">Sair do Sistema</p>
+                            </div>
+                            <div className="w-9 h-9 bg-brand-primary group-hover:bg-red-500 text-white rounded-lg flex items-center justify-center font-bold shadow-md transition-colors">
+                                {JSON.parse(localStorage.getItem('@AtasApp:usuario') || 'null')?.nome?.charAt(0).toUpperCase() || 'S'}
+                            </div>
+                        </div>
+                    </div>
                 </header>
 
                 <main className="flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth">
