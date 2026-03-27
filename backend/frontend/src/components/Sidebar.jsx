@@ -1,13 +1,19 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { 
-  LayoutDashboard, Users, FileText, Settings, ChevronLeft, ChevronRight, X 
+  LayoutDashboard, Users, FileText, Settings, ChevronLeft, ChevronRight, X, LogOut
 } from 'lucide-react';
 
 export default function Sidebar({ isMobileMenuOpen, setIsMobileMenuOpen, activeMenuOverride, onMenuClick }) {
     const navigate = useNavigate();
     const location = useLocation();
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+    const handleLogout = () => {
+        localStorage.removeItem('@AtasApp:token');
+        localStorage.removeItem('@AtasApp:usuario');
+        navigate('/login');
+    };
 
     // Determine absolute active menu if override is not provided
     const path = location.pathname;
@@ -93,6 +99,17 @@ export default function Sidebar({ isMobileMenuOpen, setIsMobileMenuOpen, activeM
                 >
                     <Settings size={22} />
                     {!isSidebarCollapsed && <span>Configurações</span>}
+                </button>
+            </div>
+            
+            <div className="p-3 border-t border-gray-100">
+                <button 
+                    onClick={handleLogout}
+                    className={`flex items-center w-full py-3 rounded-xl transition-all text-sm font-bold ${isSidebarCollapsed ? 'justify-center px-0' : 'px-4 gap-3'} text-red-500 hover:bg-red-50 hover:text-red-600`}
+                    title={isSidebarCollapsed ? "Sair" : ""}
+                >
+                    <LogOut size={22} />
+                    {!isSidebarCollapsed && <span>Sair do Sistema</span>}
                 </button>
             </div>
         </aside>
