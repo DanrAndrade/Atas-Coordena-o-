@@ -12,6 +12,78 @@ from reportlab.lib.pagesizes import A4
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
+from html.parser import HTMLParser
+import html as python_html
+
+class ReportLabHTMLParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.output = []
+        self.list_type = []
+        self.list_counters = []
+        
+    def handle_starttag(self, tag, attrs):
+        if tag in ['b', 'strong']: self.output.append('<b>')
+        elif tag in ['i', 'em']: self.output.append('<i>')
+        elif tag in ['u']: self.output.append('<u>')
+        elif tag in ['s', 'strike']: self.output.append('<strike>')
+        elif tag in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']: self.output.append('<b>')
+        elif tag == 'br': self.output.append('<br/>')
+        elif tag == 'ul':
+            self.list_type.append('ul')
+            self.list_counters.append(0)
+        elif tag == 'ol':
+            self.list_type.append('ol')
+            self.list_counters.append(0)
+        elif tag == 'li':
+            if self.list_type:
+                if self.list_type[-1] == 'ul':
+                    self.output.append('&bull; ')
+                else:
+                    self.list_counters[-1] += 1
+                    self.output.append(f"{self.list_counters[-1]}. ")
+            else:
+                self.output.append('&bull; ')
+
+    def handle_endtag(self, tag):
+        if tag in ['b', 'strong']: self.output.append('</b>')
+        elif tag in ['i', 'em']: self.output.append('</i>')
+        elif tag in ['u']: self.output.append('</u>')
+        elif tag in ['s', 'strike']: self.output.append('</strike>')
+        elif tag in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']: self.output.append('</b><br/>')
+        elif tag == 'p': self.output.append('<br/>')
+        elif tag in ['ul', 'ol']:
+            if self.list_type:
+                self.list_type.pop()
+                self.list_counters.pop()
+        elif tag == 'li':
+            self.output.append('<br/>')
+
+    def handle_data(self, data):
+        data = data.replace('\n', '').replace('\r', '')
+        if data:
+            self.output.append(python_html.escape(data))
+
+    def handle_entityref(self, name):
+        decoded = python_html.unescape(f'&{name};')
+        if decoded in ('<', '>', '&'): self.output.append(python_html.escape(decoded))
+        else: self.output.append(decoded)
+        
+    def handle_charref(self, name):
+        decoded = python_html.unescape(f'&#{name};')
+        if decoded in ('<', '>', '&'): self.output.append(python_html.escape(decoded))
+        else: self.output.append(decoded)
+
+def clean_html_for_reportlab(html_text):
+    if not html_text:
+        return "Nenhum relato adicional."
+    parser = ReportLabHTMLParser()
+    parser.feed(html_text)
+    result = "".join(parser.output)
+    # Replaces multiple contiguous <br/> with fewer to avoid huge spacing
+    while result.endswith('<br/>'):
+        result = result[:-5]
+    return result.strip() or "Nenhum relato adicional."
 
 api_bp = Blueprint('api', __name__)
 
@@ -40,13 +112,58 @@ def importar_professores(current_user):
     if arquivo.filename == '': return jsonify({'erro': 'Nenhum arquivo selecionado'}), 400
     try:
         df = pd.read_csv(arquivo) if arquivo.filename.endswith('.csv') else pd.read_excel(arquivo)
+        
+        relatorio = {
+            'novos': 0,
+            'atualizados': 0,
+            'detalhes_atualizacoes': []
+        }
+        
         for _, row in df.iterrows():
             nome = row.get('nome')
             if pd.notna(nome):
-                prof = Professor(nome=str(nome).strip(), disciplina=str(row.get('disciplina', '')).strip(), turmas=str(row.get('turmas', '')).strip())
-                db.session.add(prof)
+                nome_str = str(nome).strip()
+                if not nome_str: continue
+                
+                disciplina_val = row.get('disciplina')
+                turmas_val = row.get('turmas')
+                
+                existente = Professor.query.filter(Professor.nome.ilike(nome_str)).first()
+                
+                if existente:
+                    campos_alterados = []
+                    # Atualiza os dados se a planilha contiver informações não vazias
+                    if pd.notna(disciplina_val) and str(disciplina_val).strip():
+                        novo_disc = str(disciplina_val).strip()
+                        if existente.disciplina != novo_disc:
+                            existente.disciplina = novo_disc
+                            campos_alterados.append('disciplina')
+                            
+                    if pd.notna(turmas_val) and str(turmas_val).strip():
+                        nova_turma = str(turmas_val).strip()
+                        if existente.turmas != nova_turma:
+                            existente.turmas = nova_turma
+                            campos_alterados.append('turmas')
+                            
+                    if campos_alterados:
+                        relatorio['atualizados'] += 1
+                        relatorio['detalhes_atualizacoes'].append({
+                            'nome': existente.nome,
+                            'alteracoes': campos_alterados
+                        })
+                else:
+                    # Insere novo professor
+                    disciplina_str = str(disciplina_val).strip() if pd.notna(disciplina_val) else ''
+                    turmas_str = str(turmas_val).strip() if pd.notna(turmas_val) else ''
+                    prof = Professor(nome=nome_str, disciplina=disciplina_str, turmas=turmas_str)
+                    db.session.add(prof)
+                    relatorio['novos'] += 1
+                    
         db.session.commit()
-        return jsonify({'mensagem': 'Importação concluída com sucesso!'}), 200
+        return jsonify({
+            'mensagem': 'Importação concluída!',
+            'relatorio': relatorio
+        }), 200
     except Exception as e:
         return jsonify({'erro': f'Erro ao processar arquivo: {str(e)}'}), 500
 
@@ -313,10 +430,10 @@ def gerar_pdf_ata(current_user, id):
             except: pass
 
     elements.append(Paragraph("RELATO DA COORDENAÇÃO:", styles['SectionTitle']))
-    elements.append(Paragraph(html.escape(ata.observacoes_coordenacao_texto or "Nenhum relato adicional.").replace('\n', '<br/>'), styles['TextNormal']))
+    elements.append(Paragraph(clean_html_for_reportlab(ata.observacoes_coordenacao_texto), styles['TextNormal']))
 
     elements.append(Paragraph("RELATO DO(A) PROFESSOR(A):", styles['SectionTitle']))
-    elements.append(Paragraph(html.escape(ata.observacoes_professor_texto or "Nenhum relato adicional.").replace('\n', '<br/>'), styles['TextNormal']))
+    elements.append(Paragraph(clean_html_for_reportlab(ata.observacoes_professor_texto), styles['TextNormal']))
 
     elements.append(Paragraph("COMBINADOS E PRAZOS DEFINIDOS:", styles['SectionTitle']))
     comps = Compromisso.query.filter_by(ata_id=ata.id).all()

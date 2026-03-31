@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Bell } from 'lucide-react';
+import { ArrowLeft, Bell, Menu } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
+import Topbar from '../components/Topbar';
 import api from '../services/api';
 
 function ProfessorProfile() {
@@ -139,32 +140,7 @@ function ProfessorProfile() {
 
                 <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative z-10">
 
-                    <header className="h-16 bg-white/90 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-4 lg:px-8 shrink-0 z-20 shadow-sm sticky top-0">
-                        <div className="flex items-center gap-4">
-                            <button onClick={() => navigate(-1)} className="p-2 text-slate-500 hover:bg-slate-100 hover:text-brand-primary rounded-lg transition-colors" title="Voltar">
-                                <ArrowLeft size={22} />
-                            </button>
-                            <span className="text-lg font-black text-brand-primary italic font-headline hidden md:block">Sistema IASC</span>
-                        </div>
-                        <div className="flex items-center gap-4">
-                            <button className="p-2 text-slate-400 hover:bg-slate-100 hover:text-brand-primary rounded-full transition-colors hidden sm:block">
-                                <Bell size={18} />
-                            </button>
-                            <div className="h-6 w-px bg-slate-200 hidden md:block"></div>
-
-                            <div className="flex items-center gap-3 p-1.5 pr-3">
-                                <div className="hidden md:block text-right">
-                                    <p className="text-sm font-bold text-slate-700 leading-tight font-body">
-                                        {JSON.parse(localStorage.getItem('@AtasApp:usuario') || 'null')?.nome || 'Utilizador'}
-                                    </p>
-                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wide font-label">Coordenação</p>
-                                </div>
-                                <div className="w-8 h-8 bg-brand-primary text-white rounded-lg flex items-center justify-center text-sm font-bold shadow-sm">
-                                    {JSON.parse(localStorage.getItem('@AtasApp:usuario') || 'null')?.nome?.charAt(0).toUpperCase() || 'C'}
-                                </div>
-                            </div>
-                        </div>
-                    </header>
+                    <Topbar showMenuButton={true} onMenuClick={() => setIsMobileMenuOpen(true)} />
 
                     <main className="flex-1 overflow-y-auto px-4 py-6 md:px-8 md:py-8 scroll-smooth">
                         <div className="max-w-6xl mx-auto space-y-8">

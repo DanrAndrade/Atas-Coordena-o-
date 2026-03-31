@@ -16,11 +16,13 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        // Se der erro 401, limpa tudo e atira para o login
+        // Se der erro 401 e não estivermos na página de login, limpa tudo e atira para o login
         if (error.response && error.response.status === 401) {
-            localStorage.removeItem('@AtasApp:token');
-            localStorage.removeItem('@AtasApp:user');
-            window.location.href = '/login';
+            if (window.location.pathname !== '/login') {
+                localStorage.removeItem('@AtasApp:token');
+                localStorage.removeItem('@AtasApp:usuario');
+                window.location.href = '/login';
+            }
         }
         return Promise.reject(error);
     }

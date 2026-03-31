@@ -30,7 +30,7 @@ const Login = () => {
       // O seu código original ia para '/', o meu ia para '/home'. Ajustado para '/'.
       navigate('/');
     } catch (err) {
-      setErro(err.response?.data?.message || 'Falha ao fazer login. Verifique suas credenciais.');
+      setErro(err.response?.data?.error_message || err.response?.data?.message || 'Falha ao fazer login. Verifique suas credenciais.');
     } finally {
       setLoading(false);
     }

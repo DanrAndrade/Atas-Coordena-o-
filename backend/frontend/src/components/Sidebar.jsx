@@ -7,7 +7,17 @@ import {
 export default function Sidebar({ isMobileMenuOpen, setIsMobileMenuOpen, activeMenuOverride, onMenuClick }) {
     const navigate = useNavigate();
     const location = useLocation();
-    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+    
+    // Persistindo o estado da sidebar no localStorage
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+        return localStorage.getItem('@AtasApp:sidebarCollapsed') === 'true';
+    });
+
+    const toggleSidebar = () => {
+        const newState = !isSidebarCollapsed;
+        setIsSidebarCollapsed(newState);
+        localStorage.setItem('@AtasApp:sidebarCollapsed', String(newState));
+    };
 
     const handleLogout = () => {
         localStorage.removeItem('@AtasApp:token');
@@ -53,7 +63,7 @@ export default function Sidebar({ isMobileMenuOpen, setIsMobileMenuOpen, activeM
                 )}
                 
                 <button 
-                    onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)} 
+                    onClick={toggleSidebar} 
                     className="hidden lg:flex p-1.5 text-slate-400 hover:bg-gray-100 hover:text-brand-primary rounded-lg transition-colors"
                 >
                     {isSidebarCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
