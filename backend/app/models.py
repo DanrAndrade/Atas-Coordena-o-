@@ -1,6 +1,11 @@
 from datetime import datetime
+import zoneinfo
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
+
+def get_local_now():
+    # Retorna o horário atual de Salvador, BA (America/Bahia) sem fuso horário para compatibilidade com o banco
+    return datetime.now(zoneinfo.ZoneInfo("America/Bahia")).replace(tzinfo=None)
 
 class Coordenador(db.Model):
     __tablename__ = 'coordenador'
@@ -34,7 +39,7 @@ class Ata(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     professor_id = db.Column(db.Integer, db.ForeignKey('professor.id'), nullable=False)
     coordenador_id = db.Column(db.Integer, db.ForeignKey('coordenador.id'), nullable=False)
-    data_criacao = db.Column(db.DateTime, default=datetime.utcnow)
+    data_criacao = db.Column(db.DateTime, default=get_local_now)
     registros_portal = db.Column(db.String(20), nullable=False)
     observacoes_professor_texto = db.Column(db.Text)
     observacoes_coordenacao_texto = db.Column(db.Text)
@@ -49,7 +54,7 @@ class Compromisso(db.Model):
     ata_id = db.Column(db.Integer, db.ForeignKey('ata.id'), nullable=False)
     descricao = db.Column(db.String(255), nullable=False)
     ata_origem_id = db.Column(db.Integer)
-    data_geracao = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    data_geracao = db.Column(db.DateTime, default=get_local_now, nullable=False)
     data_prazo_limite = db.Column(db.DateTime)
     data_cumprimento = db.Column(db.DateTime)
     status = db.Column(db.String(20), default='pendente')

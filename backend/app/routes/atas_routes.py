@@ -5,7 +5,7 @@ import html
 import os
 from datetime import datetime
 from flask import Blueprint, request, jsonify, send_file, current_app
-from ..models import db, Professor, Ata, Compromisso, Tag
+from ..models import db, Professor, Ata, Compromisso, Tag, get_local_now
 from .auth_routes import token_required
 
 from reportlab.lib.pagesizes import A4
@@ -196,7 +196,7 @@ def create_ata(current_user):
             
     concluidos_ids = dados.get('compromissos_concluidos', [])
     if concluidos_ids:
-        Compromisso.query.filter(Compromisso.id.in_(concluidos_ids)).update({"status": "concluido", "data_cumprimento": datetime.utcnow()}, synchronize_session=False)
+        Compromisso.query.filter(Compromisso.id.in_(concluidos_ids)).update({"status": "concluido", "data_cumprimento": get_local_now()}, synchronize_session=False)
             
     db.session.commit()
     return jsonify({'mensagem': 'Ata criada com sucesso!', 'id': nova_ata.id}), 201
@@ -226,7 +226,7 @@ def get_pendencias_professor(current_user, id):
     pendencias = Compromisso.query.filter(Compromisso.ata_id.in_(atas_ids), Compromisso.status == 'pendente').all()
     resultado = []
     for c in pendencias:
-        data_origem = c.ata.data_criacao if c.ata and c.ata.data_criacao else datetime.utcnow()
+        data_origem = c.ata.data_criacao if c.ata and c.ata.data_criacao else get_local_now()
         data_prazo = None
         if c.data_prazo_limite:
             try: data_prazo = c.data_prazo_limite.strftime('%d/%m/%Y')
@@ -239,7 +239,7 @@ def get_pendencias_professor(current_user, id):
 def concluir_compromisso(current_user, id):
     comp = Compromisso.query.get_or_404(id)
     comp.status = 'concluido'
-    comp.data_cumprimento = datetime.utcnow()
+    comp.data_cumprimento = get_local_now()
     db.session.commit()
     return jsonify({'mensagem': 'Compromisso concluído com sucesso!'}), 200
 

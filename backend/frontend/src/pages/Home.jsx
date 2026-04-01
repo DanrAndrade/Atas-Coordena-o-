@@ -23,6 +23,32 @@ function Home() {
     const [arquivo, setArquivo] = useState(null);
     const [mensagem, setMensagem] = useState({ texto: '', tipo: '' });
 
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [dropdownDirection, setDropdownDirection] = useState('down');
+    const dropdownRef = useRef(null);
+
+    useEffect(() => {
+        if (isDropdownOpen && dropdownRef.current) {
+            const rect = dropdownRef.current.getBoundingClientRect();
+            const spaceBelow = window.innerHeight - rect.bottom;
+            if (spaceBelow < 300) { // Se menos de 300px disponíveis abaixo
+                setDropdownDirection('up');
+            } else {
+                setDropdownDirection('down');
+            }
+        }
+    }, [isDropdownOpen]);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsDropdownOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
     // DASHBOARD & MODAIS DE INFORMAÇÃO
     const [dashboard, setDashboard] = useState({
         total_professores: 0, total_atas: 0,
@@ -333,54 +359,73 @@ function Home() {
                                                 onChange={(e) => setSearchTerm(e.target.value)}
                                             />
                                         </div>
-                                        <div className="flex gap-2 overflow-x-auto pb-2 w-full md:w-auto hide-scrollbar">
+                                        <div className="w-full md:w-auto relative" ref={dropdownRef}>
                                             <button
-                                                onClick={() => setFiltroDisciplina('')}
-                                                className={`px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all border ${filtroDisciplina === '' ? 'bg-slate-900 text-white border-slate-900 shadow-md' : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50'}`}
+                                                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                                                className={`w-full md:min-w-[260px] pl-12 pr-10 py-3.5 bg-white border ${isDropdownOpen ? 'border-brand-primary ring-4 ring-brand-primary/10' : 'border-slate-200'} rounded-2xl transition-all font-body text-sm text-left flex items-center justify-between shadow-sm outline-none cursor-pointer group`}
                                             >
-                                                Todos
+                                                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-hover:text-brand-primary transition-colors">filter_list</span>
+                                                <span className="truncate font-bold text-slate-700">
+                                                    {filtroDisciplina || 'Todas as Disciplinas'}
+                                                </span>
+                                                <div className="flex items-center gap-1">
+                                                    {filtroDisciplina && (
+                                                        <span 
+                                                            onClick={(e) => { e.stopPropagation(); setFiltroDisciplina(''); setIsDropdownOpen(false); }}
+                                                            className="material-symbols-outlined text-[20px] text-slate-400 hover:text-red-500 transition-all p-1 hover:bg-red-50 rounded-full"
+                                                            title="Limpar filtro"
+                                                        >
+                                                            close
+                                                        </span>
+                                                    )}
+                                                    <span className={`material-symbols-outlined text-slate-400 transition-transform duration-300 font-light ${isDropdownOpen ? 'rotate-180' : ''}`}>expand_more</span>
+                                                </div>
                                             </button>
-                                            {disciplinasUnicas.map((disc, idx) => (
-                                                <button
-                                                    key={idx}
-                                                    onClick={() => setFiltroDisciplina(disc)}
-                                                    className={`px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-widest whitespace-nowrap transition-all border ${filtroDisciplina === disc ? 'bg-brand-primary text-white border-brand-primary shadow-md shadow-brand-primary/20' : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50'}`}
-                                                >
-                                                    {disc}
-                                                </button>
-                                            ))}
+
+                                            {isDropdownOpen && (
+                                                <div className={`absolute left-0 right-0 z-[100] bg-white border border-slate-100 rounded-3xl shadow-2xl overflow-hidden animate-fade-in-up p-1.5 backdrop-blur-xl bg-white/95 ${dropdownDirection === 'up' ? 'bottom-full mb-3 origin-bottom' : 'top-full mt-3 origin-top'}`}>
+                                                    <div className="max-h-64 overflow-y-auto custom-scrollbar p-1">
+                                                        <button
+                                                            onClick={() => { setFiltroDisciplina(''); setIsDropdownOpen(false); }}
+                                                            className={`w-full px-4 py-3.5 text-left text-[13px] rounded-xl transition-all flex items-center justify-between mb-1 ${filtroDisciplina === '' ? 'bg-brand-light text-brand-primary font-extrabold shadow-sm' : 'text-slate-500 font-semibold hover:bg-slate-50 hover:text-slate-800'}`}
+                                                        >
+                                                            Todas as Disciplinas
+                                                            {filtroDisciplina === '' && <span className="material-symbols-outlined text-[18px]">check_circle</span>}
+                                                        </button>
+                                                        {disciplinasUnicas.map((disc, idx) => (
+                                                            <button
+                                                                key={idx}
+                                                                onClick={() => { setFiltroDisciplina(disc); setIsDropdownOpen(false); }}
+                                                                className={`w-full px-4 py-3.5 text-left text-[13px] rounded-xl transition-all flex items-center justify-between mb-1 ${filtroDisciplina === disc ? 'bg-brand-light text-brand-primary font-extrabold shadow-sm' : 'text-slate-500 font-semibold hover:bg-slate-50 hover:text-slate-800'}`}
+                                                            >
+                                                                {disc}
+                                                                {filtroDisciplina === disc && <span className="material-symbols-outlined text-[18px]">check_circle</span>}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
 
-                                    <div className="bg-white rounded-2xl editorial-shadow border border-slate-200 overflow-hidden">
-                                        <div className="overflow-x-auto">
-                                            <table className="w-full border-collapse text-left min-w-[800px]">
-                                                <thead>
-                                                    <tr className="bg-slate-900 text-white font-headline text-xs uppercase tracking-widest border-none">
-                                                        <th className="px-8 py-5 font-bold rounded-tl-xl">Professor</th>
-                                                        <th className="px-6 py-5 font-bold">Disciplina</th>
-                                                        <th className="px-6 py-5 font-bold">Turmas</th>
-                                                        <th className="px-8 py-5 text-right font-bold rounded-tr-xl">Ações</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody className="divide-y divide-slate-100 font-body">
-                                                    {filteredProfessores.length === 0 ? (
-                                                        <tr>
-                                                            <td colSpan="4" className="px-8 py-16 text-center">
-                                                                <div className="flex flex-col items-center justify-center text-slate-400">
-                                                                    <span className="material-symbols-outlined text-5xl mb-3 opacity-50">search_off</span>
-                                                                    <p className="font-medium text-lg text-slate-500">Nenhum professor encontrado.</p>
-                                                                    <p className="text-sm mt-1">Tente ajustar os seus termos de busca ou filtros.</p>
-                                                                </div>
-                                                            </td>
+                                    <div className="bg-white rounded-2xl editorial-shadow border border-slate-200 overflow-hidden min-h-[400px] flex flex-col">
+                                        {filteredProfessores.length > 0 ? (
+                                            <div className="overflow-x-auto">
+                                                <table className="w-full border-collapse text-left min-w-[800px]">
+                                                    <thead>
+                                                        <tr className="bg-slate-900 text-white font-headline text-xs uppercase tracking-widest border-none">
+                                                            <th className="px-8 py-5 font-bold rounded-tl-xl">Professor</th>
+                                                            <th className="px-6 py-5 font-bold">Disciplina</th>
+                                                            <th className="px-6 py-5 font-bold">Turmas</th>
+                                                            <th className="px-8 py-5 text-right font-bold rounded-tr-xl">Ações</th>
                                                         </tr>
-                                                    ) : (
-                                                        filteredProfessores.map((prof) => (
+                                                    </thead>
+                                                    <tbody className="divide-y divide-slate-100 font-body">
+                                                        {filteredProfessores.map((prof) => (
                                                             <tr key={prof.id} onClick={() => navigate(`/professor/${prof.id}`)} className="group hover:bg-slate-50/80 transition-colors duration-300 cursor-pointer">
                                                                 <td className="px-8 py-6 w-2/5">
                                                                     <div>
                                                                         <p className="font-headline font-bold text-lg text-slate-800 group-hover:text-brand-primary transition-colors">{prof.nome}</p>
-                                                                        <p className="text-[11px] text-slate-400 font-bold uppercase tracking-widest mt-1">Docente Registado</p>
                                                                     </div>
                                                                 </td>
                                                                 <td className="px-6 py-6 w-1/4">
@@ -402,11 +447,30 @@ function Home() {
                                                                     </button>
                                                                 </td>
                                                             </tr>
-                                                        ))
-                                                    )}
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        ) : (
+                                            <div className="flex-1 flex flex-col items-center justify-center py-20 px-8 text-center animate-fade-in-up">
+                                                <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-6 relative shadow-inner">
+                                                    <span className="material-symbols-outlined text-5xl text-slate-300">person_search</span>
+                                                    <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md border border-slate-100">
+                                                        <span className="material-symbols-outlined text-slate-400 text-sm">search_off</span>
+                                                    </div>
+                                                </div>
+                                                <h3 className="text-xl font-bold text-slate-800 font-headline mb-2">Nenhum professor encontrado</h3>
+                                                <p className="text-slate-500 text-sm font-body max-w-sm leading-relaxed">
+                                                    Não encontramos resultados para sua busca atual. Verifique o nome digitado ou tente selecionar outra disciplina.
+                                                </p>
+                                                <button 
+                                                    onClick={() => { setSearchTerm(''); setFiltroDisciplina(''); }}
+                                                    className="mt-8 px-8 py-3.5 bg-brand-light text-brand-primary font-bold text-[11px] uppercase tracking-widest rounded-xl hover:bg-brand-primary hover:text-white transition-all shadow-md active:scale-95"
+                                                >
+                                                    Limpar Todos os Filtros
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             )}
