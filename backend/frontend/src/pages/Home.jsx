@@ -410,47 +410,103 @@ function Home() {
 
                                     <div className="bg-white rounded-2xl editorial-shadow border border-slate-200 overflow-hidden min-h-[400px] flex flex-col">
                                         {filteredProfessores.length > 0 ? (
-                                            <div className="overflow-x-auto">
-                                                <table className="w-full border-collapse text-left min-w-[800px]">
-                                                    <thead>
-                                                        <tr className="bg-slate-900 text-white font-headline text-xs uppercase tracking-widest border-none">
-                                                            <th className="px-8 py-5 font-bold rounded-tl-xl">Professor</th>
-                                                            <th className="px-6 py-5 font-bold">Disciplina</th>
-                                                            <th className="px-6 py-5 font-bold">Turmas</th>
-                                                            <th className="px-8 py-5 text-right font-bold rounded-tr-xl">Ações</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody className="divide-y divide-slate-100 font-body">
-                                                        {filteredProfessores.map((prof) => (
-                                                            <tr key={prof.id} onClick={() => navigate(`/professor/${prof.id}`)} className="group hover:bg-slate-50/80 transition-colors duration-300 cursor-pointer">
-                                                                <td className="px-8 py-6 w-2/5">
-                                                                    <div>
-                                                                        <p className="font-headline font-bold text-lg text-slate-800 group-hover:text-brand-primary transition-colors">{prof.nome}</p>
+                                            <>
+                                                {/* Desktop Table View */}
+                                                <div className="hidden lg:block overflow-x-auto">
+                                                    <table className="w-full border-collapse text-left min-w-[800px]">
+                                                        <thead>
+                                                            <tr className="bg-slate-900 text-white font-headline text-xs uppercase tracking-widest border-none">
+                                                                <th className="px-8 py-5 font-bold rounded-tl-xl">Professor</th>
+                                                                <th className="px-6 py-5 font-bold">Disciplina</th>
+                                                                <th className="px-6 py-5 font-bold">Turmas</th>
+                                                                <th className="px-8 py-5 text-right font-bold rounded-tr-xl">Ações</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody className="divide-y divide-slate-100 font-body">
+                                                            {filteredProfessores.map((prof) => (
+                                                                <tr key={prof.id} onClick={() => navigate(`/professor/${prof.id}`)} className="group hover:bg-slate-50/80 transition-colors duration-300 cursor-pointer">
+                                                                    <td className="px-8 py-6 w-2/5">
+                                                                        <div>
+                                                                            <p className="font-headline font-bold text-lg text-slate-800 group-hover:text-brand-primary transition-colors">{prof.nome}</p>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td className="px-6 py-6 w-1/4">
+                                                                        <div className="flex flex-wrap gap-2">
+                                                                            {prof.disciplina?.split(',').map((d, i) => (
+                                                                                <span key={i} className="px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-full text-[10px] font-bold text-slate-600 uppercase tracking-wider">{d.trim()}</span>
+                                                                            ))}
+                                                                        </div>
+                                                                    </td>
+                                                                    <td className="px-6 py-6 w-1/4">
+                                                                        <span className="font-body text-sm font-bold text-slate-700 flex items-center gap-2">
+                                                                            <span className="material-symbols-outlined text-slate-400 text-lg">group</span>
+                                                                            {prof.turmas || '-'}
+                                                                        </span>
+                                                                    </td>
+                                                                    <td className="px-8 py-6 text-right w-32">
+                                                                        <button className="inline-flex items-center justify-center p-3 text-slate-400 bg-white border border-slate-200 rounded-xl group-hover:bg-brand-primary group-hover:text-white group-hover:border-brand-primary transition-all shadow-sm">
+                                                                            <span className="material-symbols-outlined">arrow_forward</span>
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                                {/* Mobile Card View */}
+                                                <div className="lg:hidden flex flex-col gap-4 p-4 bg-slate-50/50">
+                                                    {filteredProfessores.map((prof) => (
+                                                        <div 
+                                                            key={prof.id} 
+                                                            onClick={() => navigate(`/professor/${prof.id}`)}
+                                                            className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm active:scale-[0.98] transition-all flex flex-col"
+                                                        >
+                                                            <div className="flex items-center gap-4 mb-5">
+                                                                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-primary to-orange-600 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-brand-primary/20 shrink-0">
+                                                                    {prof.nome.charAt(0).toUpperCase()}
+                                                                </div>
+                                                                <div className="flex-1 min-w-0">
+                                                                    <h3 className="font-headline font-bold text-lg text-slate-800 leading-tight truncate">{prof.nome}</h3>
+                                                                    <div className="flex items-center gap-2 mt-1">
+                                                                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                                                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Portal Ativo</span>
                                                                     </div>
-                                                                </td>
-                                                                <td className="px-6 py-6 w-1/4">
+                                                                </div>
+                                                                <span className="material-symbols-outlined text-slate-300">chevron_right</span>
+                                                            </div>
+
+                                                            <div className="space-y-4 mb-6">
+                                                                <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                                                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5 shrink-0">
+                                                                        <span className="material-symbols-outlined text-sm">subject</span>
+                                                                        Disciplina
+                                                                    </p>
                                                                     <div className="flex flex-wrap gap-2">
                                                                         {prof.disciplina?.split(',').map((d, i) => (
-                                                                            <span key={i} className="px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-full text-[10px] font-bold text-slate-600 uppercase tracking-wider">{d.trim()}</span>
+                                                                            <span key={i} className="px-3 py-1 bg-brand-light text-brand-primary rounded-lg text-[10px] font-bold uppercase tracking-wider border border-brand-primary/10">{d.trim()}</span>
                                                                         ))}
                                                                     </div>
-                                                                </td>
-                                                                <td className="px-6 py-6 w-1/4">
-                                                                    <span className="font-body text-sm font-bold text-slate-700 flex items-center gap-2">
-                                                                        <span className="material-symbols-outlined text-slate-400 text-lg">group</span>
+                                                                </div>
+                                                                <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                                                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5 shrink-0">
+                                                                        <span className="material-symbols-outlined text-sm">groups</span>
+                                                                        Turmas
+                                                                    </p>
+                                                                    <p className="text-sm font-bold text-slate-700 bg-slate-50 px-3 py-1 rounded-lg border border-slate-100 min-w-[60px] text-center">
                                                                         {prof.turmas || '-'}
-                                                                    </span>
-                                                                </td>
-                                                                <td className="px-8 py-6 text-right w-32">
-                                                                    <button className="inline-flex items-center justify-center p-3 text-slate-400 bg-white border border-slate-200 rounded-xl group-hover:bg-brand-primary group-hover:text-white group-hover:border-brand-primary transition-all shadow-sm">
-                                                                        <span className="material-symbols-outlined">arrow_forward</span>
-                                                                    </button>
-                                                                </td>
-                                                            </tr>
-                                                        ))}
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+
+                                                            <button className="w-full py-4 bg-slate-900 text-white font-bold text-xs uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-slate-900/10 active:bg-slate-800 transition-colors">
+                                                                <span className="material-symbols-outlined text-lg">visibility</span>
+                                                                Explorar Perfil
+                                                            </button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </>
                                         ) : (
                                             <div className="flex-1 flex flex-col items-center justify-center py-20 px-8 text-center animate-fade-in-up">
                                                 <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-6 relative shadow-inner">

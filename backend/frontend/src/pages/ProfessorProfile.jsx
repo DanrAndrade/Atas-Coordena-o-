@@ -305,48 +305,88 @@ function ProfessorProfile() {
                                         <span className="material-symbols-outlined absolute -right-6 top-1/2 -translate-y-1/2 text-[8rem] text-white opacity-[0.04] pointer-events-none select-none rotate-[-15deg]" data-icon="history">history</span>
                                     </div>
 
-                                    <div className="overflow-x-auto">
-                                        <table className="w-full text-left min-w-[600px]">
-                                            <thead>
-                                                <tr className="bg-slate-800 border-b border-slate-900">
-                                                    <th className="px-6 py-3 text-[10px] font-label font-black text-slate-300 uppercase tracking-widest">Ata</th>
-                                                    <th className="px-6 py-3 text-[10px] font-label font-black text-slate-300 uppercase tracking-widest">Data</th>
-                                                    <th className="px-6 py-3 text-[10px] font-label font-black text-slate-300 uppercase tracking-widest">Status</th>
-                                                    <th className="px-6 py-3 text-right text-[10px] font-label font-black text-slate-300 uppercase tracking-widest">Documento</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="divide-y divide-slate-100">
+                                    {atas.length > 0 ? (
+                                        <>
+                                            {/* Desktop View */}
+                                            <div className="hidden lg:block overflow-x-auto">
+                                                <table className="w-full text-left min-w-[600px]">
+                                                    <thead>
+                                                        <tr className="bg-slate-800 border-b border-slate-900">
+                                                            <th className="px-6 py-3 text-[10px] font-label font-black text-slate-300 uppercase tracking-widest">Ata</th>
+                                                            <th className="px-6 py-3 text-[10px] font-label font-black text-slate-300 uppercase tracking-widest">Data</th>
+                                                            <th className="px-6 py-3 text-[10px] font-label font-black text-slate-300 uppercase tracking-widest">Status</th>
+                                                            <th className="px-6 py-3 text-right text-[10px] font-label font-black text-slate-300 uppercase tracking-widest">Documento</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody className="divide-y divide-slate-100">
+                                                        {atas.map(ata => (
+                                                            <tr key={ata.id} className="hover:bg-slate-50/80 transition-colors group/row">
+                                                                <td className="px-6 py-4">
+                                                                    <p className="font-bold text-slate-700 text-sm font-body">Alinhamento #{ata.id}</p>
+                                                                    {ata.tags_coordenacao && ata.tags_coordenacao.length > 0 && (
+                                                                        <p className="text-[10px] text-slate-500 mt-1 truncate max-w-[250px]" title={ata.tags_coordenacao.join(', ')}>
+                                                                            {ata.tags_coordenacao.join(' • ')}
+                                                                        </p>
+                                                                    )}
+                                                                </td>
+                                                                <td className="px-6 py-4 text-xs text-slate-600 font-medium font-body">{ata.data_criacao}</td>
+                                                                <td className="px-6 py-4">
+                                                                    <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-[9px] font-black rounded-md border border-emerald-200 font-label">FECHADA</span>
+                                                                </td>
+                                                                <td className="px-6 py-4 text-right">
+                                                                    <button onClick={() => handleDownloadPDF(ata.id)} className="p-2 text-slate-500 bg-white border border-slate-300 hover:text-white hover:bg-brand-primary hover:border-brand-primary rounded-lg transition-all shadow-sm group-hover/row:shadow-md" title="Baixar PDF">
+                                                                        <span className="material-symbols-outlined text-[18px]" data-icon="download">download</span>
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            {/* Mobile View */}
+                                            <div className="lg:hidden flex flex-col divide-y divide-slate-100">
                                                 {atas.map(ata => (
-                                                    <tr key={ata.id} className="hover:bg-slate-50/80 transition-colors group/row">
-                                                        <td className="px-6 py-4">
-                                                            <p className="font-bold text-slate-700 text-sm font-body">Alinhamento #{ata.id}</p>
-                                                            {ata.tags_coordenacao && ata.tags_coordenacao.length > 0 && (
-                                                                <p className="text-[10px] text-slate-500 mt-1 truncate max-w-[250px]" title={ata.tags_coordenacao.join(', ')}>
-                                                                    {ata.tags_coordenacao.join(' • ')}
-                                                                </p>
-                                                            )}
-                                                        </td>
-                                                        <td className="px-6 py-4 text-xs text-slate-600 font-medium font-body">{ata.data_criacao}</td>
-                                                        <td className="px-6 py-4">
-                                                            <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-[9px] font-black rounded-md border border-emerald-200 font-label">FECHADA</span>
-                                                        </td>
-                                                        <td className="px-6 py-4 text-right">
-                                                            <button onClick={() => handleDownloadPDF(ata.id)} className="p-2 text-slate-500 bg-white border border-slate-300 hover:text-white hover:bg-brand-primary hover:border-brand-primary rounded-lg transition-all shadow-sm group-hover/row:shadow-md" title="Baixar PDF">
-                                                                <span className="material-symbols-outlined text-[18px]" data-icon="download">download</span>
-                                                            </button>
-                                                        </td>
-                                                    </tr>
+                                                    <div key={ata.id} className="p-6 hover:bg-slate-50 transition-colors flex flex-col gap-5">
+                                                        <div className="flex justify-between items-start gap-4">
+                                                            <div className="flex-1">
+                                                                <h3 className="font-headline font-extrabold text-slate-800 leading-tight">
+                                                                    Alinhamento #{ata.id}
+                                                                </h3>
+                                                                <div className="flex items-center gap-1.5 text-slate-400 mt-1.5">
+                                                                    <span className="material-symbols-outlined text-sm">calendar_month</span>
+                                                                    <p className="text-xs font-bold text-slate-400 tracking-tight font-body">{ata.data_criacao}</p>
+                                                                </div>
+                                                            </div>
+                                                            <span className="px-3 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-black rounded-lg border border-emerald-200 font-label tracking-widest shadow-sm">FECHADA</span>
+                                                        </div>
+
+                                                        {ata.tags_coordenacao && ata.tags_coordenacao.length > 0 && (
+                                                            <div className="flex flex-wrap gap-2">
+                                                                {ata.tags_coordenacao.map((tag, tIdx) => (
+                                                                    <span key={tIdx} className="px-2.5 py-1 bg-slate-100 text-slate-500 text-[10px] font-bold rounded-lg border border-slate-200 uppercase tracking-tighter">
+                                                                        {tag}
+                                                                    </span>
+                                                                ))}
+                                                            </div>
+                                                        )}
+
+                                                        <button 
+                                                            onClick={() => handleDownloadPDF(ata.id)}
+                                                            className="w-full py-4 bg-white border-2 border-slate-100 text-slate-700 font-bold text-xs uppercase tracking-widest rounded-2xl shadow-sm active:bg-slate-50 transition-all flex items-center justify-center gap-2 hover:border-brand-primary/30"
+                                                        >
+                                                            <span className="material-symbols-outlined text-[22px]">file_download</span>
+                                                            Visualizar Ata em PDF
+                                                        </button>
+                                                    </div>
                                                 ))}
-                                                {atas.length === 0 && (
-                                                    <tr>
-                                                        <td colSpan="4" className="px-6 py-12 text-center text-slate-400 font-medium italic font-body">
-                                                            Nenhuma reunião registada no histórico.
-                                                        </td>
-                                                    </tr>
-                                                )}
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <div className="px-6 py-16 text-center text-slate-400 font-medium italic font-body">
+                                            Nenhuma reunião registada no histórico.
+                                        </div>
+                                    )}
                                 </div>
                             </section>
 
