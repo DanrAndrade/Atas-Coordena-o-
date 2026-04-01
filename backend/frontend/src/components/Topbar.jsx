@@ -14,11 +14,7 @@ export default function Topbar({
         else navigate(-1);
     };
 
-    const handleLogout = () => {
-        localStorage.removeItem('@AtasApp:token');
-        localStorage.removeItem('@AtasApp:usuario');
-        navigate('/login');
-    };
+
 
     return (
         <header className="h-14 md:h-16 bg-white/80 backdrop-blur-xl border-b border-slate-200/50 flex items-center justify-between px-4 lg:px-8 shrink-0 z-20 shadow-sm sticky top-0 transition-all duration-300">
@@ -41,14 +37,14 @@ export default function Topbar({
                 </button>
                 <div className="h-8 w-px bg-slate-200 hidden md:block"></div>
 
-                <div className="flex items-center gap-3 p-1.5 pr-3 cursor-pointer group" onClick={handleLogout}>
+                <div className="flex items-center gap-3 p-1.5 pr-3 cursor-default select-none group">
                     <div className="hidden md:block text-right">
-                        <p className="text-sm font-bold text-slate-700 leading-tight font-headline group-hover:text-red-600 transition-colors">
+                        <p className="text-sm font-bold text-slate-700 leading-tight font-headline">
                             {JSON.parse(localStorage.getItem('@AtasApp:usuario') || 'null')?.nome || 'Utilizador'}
                         </p>
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wide font-body group-hover:text-red-400 transition-colors">Coordenação (Sair)</p>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wide font-body">Coordenação Pedagógica</p>
                     </div>
-                    <div className="w-10 h-10 bg-brand-primary group-hover:bg-red-500 text-white rounded-full flex items-center justify-center font-bold shadow-md transition-colors border-2 border-white">
+                    <div className="w-10 h-10 bg-brand-primary text-white rounded-full flex items-center justify-center font-bold shadow-md transition-all border-2 border-white group-hover:scale-105">
                         {JSON.parse(localStorage.getItem('@AtasApp:usuario') || 'null')?.nome?.charAt(0).toUpperCase() || 'C'}
                     </div>
                 </div>
